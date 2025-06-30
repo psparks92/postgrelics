@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import { serve } from 'bun';
 import index from './index.html';
-import { parseRelics } from './lib/parser.js';
+import { parseRelics, parseMissions } from './lib/parser.js';
 import * as db from './lib/database.js';
 
 const server = serve({
@@ -29,6 +29,19 @@ const server = serve({
       return Response.json({
         message: `Hello, ${name}!`,
       });
+    },
+    '/api/warframe': async req => {
+        let wfHtml = await fetch('https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html').then(res => res.text());
+        let $ = cheerio.load(wfHtml);
+        let missionTable = $('#missionRewards').next();
+      try {
+        let missions = parseMissions(missionTable);
+      return Response.json(missions);
+      }
+      catch (error) {
+        console.error('Error parsing missions:', error);
+        return Response.json({ error: 'Failed to parse missions' }, { status: 500 });
+      }
     },
     '/api/warframe/:searchTerm': { async GET(req) {
       let relics = await db.searchRelicsByReward(req.params.searchTerm);
