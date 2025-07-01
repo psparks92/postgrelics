@@ -78,7 +78,9 @@ export function parseMissions(table) {
 	if (cheerio.load(rows[i])('tr').children('.blank-row').length > 0) {
 	  console.log(`parsing ${missionRows.length} mission rows (i = ${i})`);
 	  let mission = parseMissionTable(missionRows);
-		missions.push({ mission: mission.node, missionType: mission.missionType, rotations: mission.rotations});
+	  if (mission) {
+		missions.push({ planet: mission.planet, node: mission.node, missionType: mission.missionType, rotations: mission.rotations});
+	  }
 	  missionRows = [];
 	}
 	else {
@@ -93,29 +95,47 @@ export function parseMissions(table) {
 function parseMissionTable(rows) {
   if (rows.length === 0) {
 	console.log('no rows?');
-	return '';
+	return null;
   }
   let title = rows[0].children[0].children[0].data;
-  let parts = /^(.*) \((.*)\)$/.exec(title);
-  let missionName = parts[1];
-  let missionType = parts[2];
+  let parts = /^(.*)\/(.*) \((.*)\)$/.exec(title);
+  if (!parts) {
+	console.log(`Failed to parse mission title: ${title}`);
+	return null;
+  }
+  let planet = parts[1];
+  let missionName = parts[2];
+  let missionType = parts[3];
   let rotations = [];
   console.log(`Parsing mission: ${missionName} (${missionType})`);
-  rows.slice(1).forEach((row) => {
+  let rotationTitle = rows[1].children[0].children[0].data;
+  let rotationRewards = [];
+  rows.slice(2).forEach((row) => {
 	let cells = row.children;
-	if (cells.length > 0) {
+	console.log(`Parsing row with ${cells.length} cells`);
+	//console.log(cells);
+	if (cells.length == 2) {
 	  let reward = {
 		item: cells[0].children[0].data,
 		rarity: cells[1].children[0].data
 	  };
-	  // console.log(`Found reward: ${reward.reward} (${reward.rarity})`);
-	  rewards.push(reward);
+	  rotationRewards.push(reward);
+	  console.log(`Found reward: ${reward.item} (${reward.rarity})`);
+	}
+	else if (cells.length == 1) {
+	  if (rotationRewards.length > 0) {
+		rotations.push({ rotation: rotationTitle, rewards: rotationRewards });
+		rotationRewards = [];
+		rotationTitle = cells[0].children[0].data;
+	  }
 	}
   });
+  rotations.push({ rotation: rotationTitle, rewards: rotationRewards });
   // console.log(`Found mission: ${missionName} (${refinement}) with ${rewards.length} rewards.`);
   return {
-	mission: missionName,
-	refinement: refinement,
-	rewards: rewards
+	planet: planet,
+	node: missionName,
+	missionType: missionType,
+	rotations: rotations
   };
 }
