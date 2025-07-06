@@ -52,6 +52,28 @@ export function APITester() {
           )}
           placeholder="/api/hello"
         />
+        <Input
+          type="text"
+          name="endpoint"
+          defaultValue="Relic Reward"
+          className={cn(
+            "flex-1 font-mono",
+            "bg-transparent border-0 shadow-none",
+            "focus-visible:ring-0 focus-visible:ring-offset-0",
+          )}
+          placeholder="Relic Reward"
+        />
+        <Input
+          type="text"
+          name="endpoint"
+          defaultValue="Mission Reward"
+          className={cn(
+            "flex-1 font-mono",
+            "bg-transparent border-0 shadow-none",
+            "focus-visible:ring-0 focus-visible:ring-offset-0",
+          )}
+          placeholder="Mission Reward"
+        />
 
         <Button type="submit" variant="secondary">
           Send
