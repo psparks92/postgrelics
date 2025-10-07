@@ -7,12 +7,12 @@ export async function updateRelics(relics) {
   } catch (error) {
     console.error("Error clearing table:", error);
   }
-   let relicsToInsert = relics.map(relic => ({
-     tier: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[1],
-     letter: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[2],
-     sequence: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[3],
-     rewards: sql.jsonb(relic.rewards)
-   }));
+  let relicsToInsert = relics.map(relic => ({
+    tier: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[1],
+    letter: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[2],
+    sequence: /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[3],
+    rewards: relic.rewards
+  }));
   try {
     await sql`insert into relics ${sql(relicsToInsert)}`;
     console.log("Inserted relics into database");
@@ -41,12 +41,12 @@ export async function updateMissionRewards(missions) {
   } catch (error) {
     console.error("Error clearing table:", error);
   }
-   let missionsToInsert = missions.map(mission => ({
-     planet: mission.planet,
-     node: mission.node,
-     mission_type: mission.missionType,
-     rotations: sql.jsonb(mission.rotations)
-   }));
+  let missionsToInsert = missions.map(mission => ({
+    planet: mission.planet,
+    node: mission.node,
+    mission_type: mission.missionType,
+    rotations: mission.rotations
+  }));
   try {
     await sql`insert into missions ${sql(missionsToInsert)}`;
     console.log("Inserted missions into database");
