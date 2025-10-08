@@ -12,7 +12,8 @@ export async function updateRelics(relics) {
       const tier = /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[1];
       const letter = /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[2];
       const sequence = /^(.*) ([A-Za-z])(\d+) Relic$/.exec(relic.relic)[3];
-      await sql`insert into relics (tier, letter, sequence, rewards) values (${tier}, ${letter}, ${sequence}, ${JSON.stringify(relic.rewards)}::jsonb)`;
+      await sql`insert into relics (tier, letter, sequence, rewards) values (${tier}, ${letter}, ${sequence}, ${relic.rewards})`;
+      // await sql`insert into relics (tier, letter, sequence, rewards) values (${tier}, ${letter}, ${sequence}, ${JSON.stringify(relic.rewards)}::jsonb)`;
     }
     console.log("Inserted relics into database");
   }
