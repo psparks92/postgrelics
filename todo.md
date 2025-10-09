@@ -1,7 +1,7 @@
 # Milestone 1: UX polish (low risk, high win)
 
 - Mission display: table or cards with sorting/filtering (planet, type, rotation).
-- Search UX: debounced search, highlight matches, quick filters (Era, mission type).
+- Search UX: debounced search, fuzzy search (don't have to type prime all the time), highlight matches, quick filters (Era, mission type).
 - Drop-rate formatting: percent bars and rarity coloring.
 
 # Milestone 2: Enhancement levels and math

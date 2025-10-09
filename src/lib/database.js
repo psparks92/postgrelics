@@ -43,7 +43,7 @@ export async function updateMissionRewards(missions) {
   }
   try {
     for (const mission of missions) {
-      await sql`insert into missions (planet, node, mission_type, rotations) values (${mission.planet}, ${mission.node}, ${mission.missionType}, ${JSON.stringify(mission.rotations)}::jsonb)`;
+      await sql`insert into missions (planet, node, mission_type, rotations) values (${mission.planet}, ${mission.node}, ${mission.missionType}, ${mission.rotations})`;
     }
     console.log("Inserted missions into database");
   }

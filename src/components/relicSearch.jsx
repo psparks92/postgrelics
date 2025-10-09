@@ -19,6 +19,19 @@ export function RelicSearch() {
 	const data = await searchResponse.json();
 	setRelics(data);
   }
+  //todo: buttons to call these, notification of success
+  const updateRelics = async () => {
+	await fetch(`/api/relic`, { method: 'PUT' });
+    // show updated
+  }
+  const updateMissions = async () => {
+	await fetch(`/api/mission`, { method: 'PUT' });
+    // show updated
+  }
+  const scrapeData = async () => {
+    await updateRelics();
+    await updateMissions();
+  }
   function printRelic(relic) {
 	let rewardName = searchTerm.toLowerCase();
 	let relicReward = relic.rewards.find((reward) =>
@@ -36,7 +49,9 @@ export function RelicSearch() {
 	<div className="max-w-2xl mx-auto p-6 space-y-4">
 	  <div>
 		<h1 className="text-2xl font-bold mb-4">Warframe Relic Search</h1>
-
+		<button onClick={scrapeData} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+		Update Data
+		</button>
 		<Input
 		  type="text"
 		  placeholder="Search for rewards (e.g., 'Prime', 'Blueprint')..."

@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { MissionCard} from "@/components/missionCard";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 
@@ -49,14 +50,17 @@ export function RelicCard({ relic, searchTerm }) {
 	>
 	  {isLoading ? 'Loading...' : showMissions ? 'Hide Missions' : 'Show Missions'}
 	</Button>
-	{missions.length > 0 && (
-	  <ul className="mt-4 space-y-2">
-	    {missions.map((mission, index) => (
-	      <li key={index} className="text-sm">
-		{mission.name} - Rotation: {mission.rotation} - Reward: {mission.reward} ({mission.rarity})
-	      </li>
-	    ))}
-	  </ul>
+	{missions.length > 0 && showMissions && (
+	 //  <ul className="mt-4 space-y-2">
+	 //    {missions.map((mission, index) => (
+	 //      <li key={index} className="text-sm">
+		// {mission.name} - Rotation: {mission.rotation} - Reward: {mission.reward} ({mission.rarity})
+	 //      </li>
+	 //    ))}
+	 //  </ul>
+	  missions.map((mission, index) => (
+	    <MissionCard key={index} mission={mission} />
+	  ))
 	)}
       </CardContent>
     </Card>

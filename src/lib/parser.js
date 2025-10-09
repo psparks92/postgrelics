@@ -78,7 +78,7 @@ export function parseMissions(table) {
 	if (cheerio.load(rows[i])('tr').children('.blank-row').length > 0) {
 	  console.log(`parsing ${missionRows.length} mission rows (i = ${i})`);
 	  let mission = parseMissionTable(missionRows);
-	  if (mission) {
+	  if (mission && !mission.planet.includes('Event')) {
 		missions.push({ planet: mission.planet, node: mission.node, missionType: mission.missionType, rotations: mission.rotations});
 	  }
 	  missionRows = [];
