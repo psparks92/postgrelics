@@ -34,6 +34,18 @@ where reward->>'item' ilike ${'%'+searchTerm+'%'}`;
   }
 }
 
+export async function searchPrimeParts(searchTerm) {
+  try {
+    const results = await sql`select distinct reward->>'item' as item
+from relics r, jsonb_array_elements(rewards) as reward
+where reward->>'item' ilike ${'%'+searchTerm+'%'}`;
+    return results;
+  } catch (error) {
+    console.error("Error searching prime parts:", error);
+    return [];
+  }
+}
+
 export async function updateMissionRewards(missions) {
   try {
     await sql`delete from missions where 1 = 1;`;

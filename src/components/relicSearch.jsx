@@ -4,7 +4,10 @@ import { RelicCard } from "./relicCard";
 
 export function RelicSearch() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [parts, setParts] = useState([]);
   const [relics, setRelics] = useState([]);
+  const [eras, setEras] = useState(["Lith", "Meso", "Neo", "Axi"]);
+  const [selectedParts, setSelectedParts] = useState([]);
 
   useEffect(() => {
 	if (searchTerm.length > 3) {
@@ -14,6 +17,11 @@ export function RelicSearch() {
 	  setRelics([]);
 	}
   }, [searchTerm]);
+  const searchPrimeParts = async (term) => {
+	const searchResponse = await fetch(`/api/primePart/${encodeUri(searchTerm)}`);
+	const data = await searchResponse.json();
+	setParts(data);
+  }
   const searchRelics = async (term) => {
 	const searchResponse = await fetch(`/api/relic/${searchTerm}`);
 	const data = await searchResponse.json();

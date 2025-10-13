@@ -9,6 +9,14 @@ const server = serve({
     // Serve index.html for all unmatched routes.
     '/*': index,
 
+    '/api/primePart/:searchTerm': { async GET(req) {
+      let missions = await db.searchMissionsByReward(req.params.searchTerm);
+      if (!missions) {
+        return Response.json({ error: 'No missions found' }, { status: 404 });
+      }
+      return Response.json(missions);
+    }
+    },
     '/api/mission/:searchTerm': { async GET(req) {
       let missions = await db.searchMissionsByReward(req.params.searchTerm);
       if (!missions) {
