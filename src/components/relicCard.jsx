@@ -10,6 +10,10 @@ export function RelicCard({ relic, searchTerm }) {
   const [showMissions, setShowMissions] = useState(false);
 
   const handleShowMissions = async () => {
+    if (showMissions) {
+			setShowMissions(false);
+			return;
+		}
     setIsLoading(true);
     let relicMissions = [];
     console.log('relic name');
