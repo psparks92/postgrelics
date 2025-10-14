@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { MissionCard} from "@/components/missionCard";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "./ui/card";
+import { MissionCard} from "./missionCard";
+import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 
 export function RelicCard({ relic, searchTerm }) {

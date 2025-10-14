@@ -10,11 +10,24 @@ const server = serve({
     '/*': index,
 
     '/api/primePart/:searchTerm': { async GET(req) {
-      let missions = await db.searchMissionsByReward(req.params.searchTerm);
+      let missions = await db.searchPrimeParts(req.params.searchTerm);
       if (!missions) {
         return Response.json({ error: 'No missions found' }, { status: 404 });
       }
       return Response.json(missions);
+    }
+    },
+    '/api/relics/search': { async POST(req) {
+      let parts = await req.json();
+      if (!parts || parts.length === 0) {
+        return Response.json({ error: 'No parts requested' }, { status: 400 });
+      }
+      let relics = await db.searchRelicsWithMultipleRewards(parts);
+      if (!relics) {
+        return Response.json({ error: 'No relics found', status: 404 });
+      }
+      console.log(relics);
+      return Response.json(relics);
     }
     },
     '/api/mission/:searchTerm': { async GET(req) {

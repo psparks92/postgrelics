@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "./ui/input";
 import { RelicCard } from "./relicCard";
+import { PrimePartCard } from "./primePartCard";
 
 export function RelicSearch() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,20 +11,41 @@ export function RelicSearch() {
   const [selectedParts, setSelectedParts] = useState([]);
 
   useEffect(() => {
-	if (searchTerm.length > 3) {
-	  searchRelics(searchTerm);
+	if (searchTerm.length > 2) {
+	  searchPrimeParts(searchTerm);
 	}
 	else {
-	  setRelics([]);
+	  setParts([]);
 	}
   }, [searchTerm]);
+
+  const togglePartSelection = (part) => {
+    if (selectedParts.includes(part)) {
+      setSelectedParts(selectedParts.filter(p => p !== part).sort());
+    }
+    else {
+      setSelectedParts([...selectedParts, part].sort());
+      }
+  }
+
   const searchPrimeParts = async (term) => {
-	const searchResponse = await fetch(`/api/primePart/${encodeUri(searchTerm)}`);
+	const searchResponse = await fetch(`/api/primePart/${encodeURI(searchTerm)}`);
 	const data = await searchResponse.json();
 	setParts(data);
+	console.log("parts");
+	console.log(data);
   }
+
+  const searchRelicsForSelected = async (term) => {
+	const searchResponse = await fetch(`/api/primePart/${encodeURI(searchTerm)}`, {METHOD: 'POST', body: JSON.stringify(selectedParts)});
+	const data = await searchResponse.json();
+	setParts(data);
+	console.log("parts");
+	console.log(data);
+  }
+
   const searchRelics = async (term) => {
-	const searchResponse = await fetch(`/api/relic/${searchTerm}`);
+	const searchResponse = await fetch(`/api/relic/${encodeURI(searchTerm)}`);
 	const data = await searchResponse.json();
 	setRelics(data);
   }
@@ -40,23 +62,19 @@ export function RelicSearch() {
     await updateRelics();
     await updateMissions();
   }
-  function printRelic(relic) {
-	let rewardName = searchTerm.toLowerCase();
-	let relicReward = relic.rewards.find((reward) =>
-	  reward.item.toLowerCase().includes(rewardName.toLowerCase()));
-	if (relicReward) {
-	  return (
-		<li key={relic.id} className="py-2">
-		  <span className="font-semibold">{relic.name}</span> - {relicReward.rarity} - {relicReward.item}
-		</li>
-	  );
-	}
-  }
 
   return (
 	<div className="max-w-2xl mx-auto p-6 space-y-4">
 	  <div>
 		<h1 className="text-2xl font-bold mb-4">Warframe Relic Search</h1>
+	  { selectedParts.length > 0 && (
+		<div>
+		  { selectedParts.map((part) => (
+			<PrimePartCard key={part} primePart={part} searchTerm={searchTerm} onSelect={() => togglePartSelection(part)} selected={selectedParts.includes(part)}/>
+		  ))
+		  }
+		</div>
+	  ) }
 		<button onClick={scrapeData} className="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
 		Update Data
 		</button>
@@ -74,6 +92,15 @@ export function RelicSearch() {
 		  </p>
 		)}
 	  </div>
+	
+	  { parts.length > 0 && (
+		<div>
+		  { parts.filter((p) => !selectedParts.includes(p)).map((part) => (
+			<PrimePartCard key={part} primePart={part} searchTerm={searchTerm} onSelect={() => togglePartSelection(part)} selected={selectedParts.includes(part)}/>
+		  ))
+		  }
+		</div>
+	  ) }
 	  { relics.length > 0 && (
 		<div>
 		  { relics.map((relic) => (

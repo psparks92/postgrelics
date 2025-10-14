@@ -34,12 +34,24 @@ where reward->>'item' ilike ${'%'+searchTerm+'%'}`;
   }
 }
 
+export async function searchRelicsWithMultipleRewards(parts) {
+  try {
+    const results = await sql`select r.name, reward->>'item' as item, reward->>'rarity' as rarity
+from relics r, jsonb_array_elements(rewards) as reward
+where reward->>'item' in ${parts}`;
+    return results;
+  } catch (error) {
+    console.error("Error searching relics:", error);
+    return [];
+  }
+}
+
 export async function searchPrimeParts(searchTerm) {
   try {
     const results = await sql`select distinct reward->>'item' as item
 from relics r, jsonb_array_elements(rewards) as reward
 where reward->>'item' ilike ${'%'+searchTerm+'%'}`;
-    return results;
+    return results.map(row => row.item);
   } catch (error) {
     console.error("Error searching prime parts:", error);
     return [];
