@@ -17,11 +17,12 @@ const server = serve({
       return Response.json(missions);
     }
     },
-    '/api/relics/search': { async POST(req) {
+    '/api/relic/search': { async POST(req) {
       let parts = await req.json();
       if (!parts || parts.length === 0) {
         return Response.json({ error: 'No parts requested' }, { status: 400 });
       }
+      console.log(parts);
       let relics = await db.searchRelicsWithMultipleRewards(parts);
       if (!relics) {
         return Response.json({ error: 'No relics found', status: 404 });

@@ -36,9 +36,17 @@ where reward->>'item' ilike ${'%'+searchTerm+'%'}`;
 
 export async function searchRelicsWithMultipleRewards(parts) {
   try {
-    const results = await sql`select r.name, reward->>'item' as item, reward->>'rarity' as rarity
+    let partsParam = sql.array(parts, 'text');
+    const results = await sql`select r.name, reward->>'item' as item, reward->>'rarity' as rarity,
+  NOT EXISTS (
+    SELECT 1
+    FROM missions m,
+         jsonb_array_elements(m.rotations) AS rotation,
+         jsonb_array_elements(rotation->'rewards') AS mission_reward
+    WHERE mission_reward->>'item' = r.name
+  ) as vaulted
 from relics r, jsonb_array_elements(rewards) as reward
-where reward->>'item' in ${parts}`;
+where reward->>'item' = ANY(${partsParam})`;
     return results;
   } catch (error) {
     console.error("Error searching relics:", error);
